@@ -3,6 +3,7 @@
   "short_name": "Lalaayyey",
   "description": "Website sederhana PWA untuk belajar HTML, CSS, dan JavaScript.",
   
+
   "start_url": "/Dessain-web/", 
   "scope": "/Dessain-web/",     
   
@@ -15,13 +16,14 @@
   
   "icons": [
     {
-      
+
       "src": "icons/icon-192.png", 
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
+
       "src": "icons/icon-512.png", 
       "sizes": "512x512",
       "type": "image/png",
