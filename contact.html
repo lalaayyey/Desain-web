@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Website Lalaayyey</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#80fff4">
+</head>
+<body>
+  <!-- Navigasi -->
+  <nav style="background-color: #80fff4; padding: 10px;">
+    <a href="index.html" style="margin-right: 15px; font-weight: bold;">Home</a>
+    <a href="about.html" style="margin-right: 15px; font-weight: bold;">About</a>
+    <a href="contact.html" class="active" style="font-weight: bold;">Contact</a>
+  </nav>
+
+  <!-- Konten Utama -->
+  <main class="container" style="padding: 20px;">
+    <h1>Kontak Saya</h1>
+
+    <!-- Informasi Kontak -->
+    <section class="contact-info">
+      <p>Email: <a href="mailto:adilabintang9@gmail.com">adilabintang9@gmail.com</a></p>
+      <p>Telepon: <a href="tel:08123456789">08123456789</a></p>
+      <p>Instagram: <a href="https://www.instagram.com/lalaayyey" target="_blank">@lalaayyey</a></p>
+    </section>
+
+    <!-- Formulir Kontak -->
+    <section class="contact-form">
+      <form id="contactForm">
+        <label for="name">Nama:</label>
+        <input type="text" id="name" name="name" placeholder="Masukkan nama kamu" required style="width:100%; padding:8px; margin-bottom:10px;">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Masukkan email aktif" required style="width:100%; padding:8px; margin-bottom:10px;">
+
+        <label for="category">Kategori Pesan:</label>
+        <select id="category" name="category" required style="width:100%; padding:8px; margin-bottom:10px;">
+          <option value="">-- Pilih Kategori --</option>
+          <option value="pertanyaan">Pertanyaan</option>
+          <option value="saran">Saran</option>
+          <option value="masalah">Masalah</option>
+        </select>
+
+        <label for="message">Pesan:</label>
+        <textarea id="message" name="message" rows="5" placeholder="Tulis pesanmu di sini..." required style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
+
+        <fieldset class="radio-group" style="margin-bottom:10px;">
+          <legend>Ingin menerima balasan?</legend>
+          <label><input type="radio" name="reply" value="ya" required> Ya</label>
+          <label><input type="radio" name="reply" value="tidak"> Tidak</label>
+        </fieldset>
+
+        <button type="submit" style="padding:10px 20px; background-color:#80fff4; border:none; border-radius:5px; cursor:pointer;">Kirim</button>
+      </form>
+
+      <p id="successMessage" style="display:none; margin-top:10px; color:green; font-weight:bold;">
+        ✅ Terima kasih! Pesanmu sudah dikirim~
+      </p>
+    </section>
+  </main>
+
+  <!-- Tombol Install PWA -->
+  <button class="install-btn" id="installBtn">📥 Install Aplikasi</button>
+
+  <!-- Script Install -->
+  <script src="install.js"></script>
+
+  <!-- Registrasi Service Worker & Form Handler -->
+  <script>
+    // Service Worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker registered"))
+        .catch(err => console.error("❌ Gagal daftar SW:", err));
+    }
+
+    // Form handler
+    const form = document.getElementById("contactForm");
+    const success = document.getElementById("successMessage");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault(); // cegah reload
+      form.reset();       // kosongkan form
+      success.style.display = "block"; // tampilkan pesan sukses
+    });
+  </script>
+  <button class="install-btn" id="installBtn">📥 Install Aplikasi</button>
+<script src="install.js"></script>
+
+</body>
+</html>

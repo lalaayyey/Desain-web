@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang Saya - Website Lalaayyey</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#80fff4">
+</head>
+<body>
+  <!-- Navigasi -->
+  <nav style="background-color: #80fff4; padding: 10px;">
+    <a href="index.html" style="margin-right: 15px; font-weight: bold;">Home</a>
+    <a href="about.html" class="active" style="margin-right: 15px; font-weight: bold;">About</a>
+    <a href="contact.html" style="font-weight: bold;">Contact</a>
+  </nav>
+
+  <!-- Konten Utama -->
+  <main class="container" style="padding: 20px;">
+    <h1>Tentang Saya</h1>
+    <p>Nama: <b>Adila Bintang</b></p>
+    <p>NIM: 2411533019</p>
+    <p>Jurusan: Informatika</p>
+    <p>Hobi: <b>Makan 🍽️</b></p>
+
+    <!-- Foto Profil -->
+    <img src="foto/WhatsApp Image 2025-09-14 at 22.17.15_bd57891d.jpg" 
+         alt="Foto Adila Bintang" 
+         width="150" 
+         style="border-radius: 10px; margin-top: 10px;">
+
+    <p style="margin-top: 15px;">
+      Halo semuanya 👋, perkenalkan nama saya <b>Adila Bintang</b>, biasanya dipanggil 
+      <b>lalaayyey</b>. Saat ini saya sedang berkuliah di Unand 🤩.
+    </p>
+
+    <p>Mungkin segitu aja perkenalannya. Jangan lupa baca pantunnya ya, hehe.</p>
+
+    <p>Jalan-jalan ke pasar membeli sate Padang,</p>
+    <p><b>Cakep!</b></p>
+
+    <p>Mari belajar website bersama Lalaayyey dong 🎉</p>
+  </main>
+
+  <!-- Tombol Install PWA -->
+  <button class="install-btn" id="installBtn">📥 Install Aplikasi</button>
+
+  <!-- Script Install -->
+  <script src="install.js"></script>
+
+  <!-- Registrasi Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker registered"))
+        .catch(err => console.error("❌ Gagal daftar SW:", err));
+    }
+  </script>
+
+  
+</body>
+</html>
