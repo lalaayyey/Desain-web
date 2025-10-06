@@ -12,27 +12,28 @@ const urlsToCache = [
   '/foto/photo.jpg'
 ];
 
-
-// Install event - cache aset statis
+// service-worker.js - PERBAIKI BAGIAN INSTALL
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Cache dibuka');
-        return cache.addAll(ASSETS_TO_CACHE);
+        // UBAH DARI ASSETS_TO_CACHE MENJADI urlsToCache
+        return cache.addAll(urlsToCache); 
       })
   );
   self.skipWaiting();
 });
 
-// Activate event - hapus cache lama
+// ============================
+// Activate Event - hapus cache lama
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Menghapus cache lama:', cacheName);
+            console.log('🗑 Menghapus cache lama:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -42,21 +43,37 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event - strategi Cache First dengan Fallback ke Offline
-self.addEventListener("fetch", (event) => {
-  if (event.request.mode === "navigate") {
-    // if user minta halaman baru, fallback ke offline.html saat offline
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => response)
-        .catch(() => caches.match("./offline.html"))
-    );
-  } else {
-    // asset load dari cache atau fetch
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        return cachedResponse || fetch(event.request);
-      })
-    );
-  }
+// ============================
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        // return dari cache
+        return response;
+      }
+
+      // fetch dari network
+      return fetch(event.request)
+        .then((networkResponse) => {
+          // validasi response
+          if (!networkResponse || networkResponse.status !== 200) {
+            return networkResponse;
+          }
+
+          // clone response untuk cache
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+
+          return networkResponse;
+        })
+        .catch(() => {
+          // fallback offline
+          if (event.request.mode === 'navigate') {
+            return caches.match('/offline.html');
+          }
+        });
+    })
+  );
 });
