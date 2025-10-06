@@ -1,32 +1,36 @@
-const CACHE_NAME = 'Website-v2'; // versi cache baru
+const CACHE_NAME = 'Website-v3'; // Naikkan versi cache
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/contact.html',
-  '/about.html',
-  '/offline.html',
-  '/style.css',
-  '/app.js',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/foto/photo.jpg'
+  // FIX: Hapus slash di depan untuk compatibility di sub-direktori (GitHub Pages)
+  './', 
+  'index.html',
+  'contact.html',
+  'about.html',
+  'offline.html',
+  'style.css',
+  'install.js', // Pastikan install.js juga di-cache
+  'app.js',     // Jika ada file app.js (diasumsikan ada)
+  'icons/icon-192.png',
+  'icons/icon-512.png',
+  'foto/photo.jpg'
 ];
 
-// service-worker.js - PERBAIKI BAGIAN INSTALL
+
+// Install event - cache aset statis
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Cache dibuka');
-        // UBAH DARI ASSETS_TO_CACHE MENJADI urlsToCache
+        console.log('✅ Cache dibuka');
+        // FIX: Menggunakan urlsToCache, BUKAN ASSETS_TO_CACHE
         return cache.addAll(urlsToCache); 
       })
+      // Tambahkan catch di sini untuk debugging jika ada file 404
+      .catch((error) => console.error('❌ Gagal meng-cache file. Cek path file di urlsToCache!', error))
   );
   self.skipWaiting();
 });
 
-// ============================
-// Activate Event - hapus cache lama
+// Activate event - hapus cache lama
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -43,37 +47,21 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// ============================
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        // return dari cache
-        return response;
-      }
-
-      // fetch dari network
-      return fetch(event.request)
-        .then((networkResponse) => {
-          // validasi response
-          if (!networkResponse || networkResponse.status !== 200) {
-            return networkResponse;
-          }
-
-          // clone response untuk cache
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-
-          return networkResponse;
-        })
-        .catch(() => {
-          // fallback offline
-          if (event.request.mode === 'navigate') {
-            return caches.match('/offline.html');
-          }
-        });
-    })
-  );
+// Fetch event - strategi Cache First untuk aset, Network First untuk navigasi (opsional)
+self.addEventListener("fetch", (event) => {
+  if (event.request.mode === "navigate") {
+    // Navigasi (HTML pages): Network First, Fallback ke offline.html
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => response)
+        .catch(() => caches.match("offline.html")) 
+    );
+  } else {
+    // Aset (CSS, JS, Gambar): Cache First, Fallback ke Network
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        return cachedResponse || fetch(event.request);
+      })
+    );
+  }
 });
