@@ -1,0 +1,51 @@
+// ============================
+// Register Service Worker
+// ============================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(() => console.log('✅ Service Worker terdaftar!'))
+    .catch(err => console.log('❌ Gagal daftar SW:', err));
+}
+
+// ============================
+// PWA Install Button
+// ============================
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // Buat tombol install
+  const installBtn = document.createElement('button');
+  installBtn.textContent = "Install Lalaayyey Web";
+  installBtn.classList.add('install-btn');
+  
+  // Style tombol (opsional)
+  installBtn.style.position = 'fixed';
+  installBtn.style.bottom = '20px';
+  installBtn.style.right = '20px';
+  installBtn.style.padding = '10px 20px';
+  installBtn.style.backgroundColor = '#80fff4';
+  installBtn.style.border = 'none';
+  installBtn.style.borderRadius = '8px';
+  installBtn.style.cursor = 'pointer';
+  installBtn.style.fontWeight = 'bold';
+  installBtn.style.zIndex = '1000';
+
+  document.body.appendChild(installBtn);
+
+  // Event klik tombol
+  installBtn.addEventListener('click', () => {
+    installBtn.remove();
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choice) => {
+      if (choice.outcome === 'accepted') {
+        console.log('🎉 Aplikasi Lalaayyey diinstal!');
+      } else {
+        console.log('❌ Pengguna menolak instalasi');
+      }
+      deferredPrompt = null;
+    });
+  });
+});

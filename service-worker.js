@@ -1,15 +1,17 @@
-const CACHE_NAME = 'Wesbsite';
+const CACHE_NAME = 'Website-v2'; // versi cache baru
 const urlsToCache = [
-  './',
-  'index.html',
-  'contact.html',
-  'about.html',
-  'offline.html',
-  'style.css',
+  '/',
+  '/index.html',
+  '/contact.html',
+  '/about.html',
+  '/offline.html',
+  '/style.css',
+  '/app.js',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  '/foto/WhatsApp Image 2025-09-14 at 22.17.15_bd57891d.jpg'
+  '/foto/photo.jpg'
 ];
+
 
 // Install event - cache aset statis
 self.addEventListener('install', (event) => {
@@ -17,7 +19,7 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Cache dibuka');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(ASSETS_TO_CACHE);
       })
   );
   self.skipWaiting();
@@ -41,37 +43,20 @@ self.addEventListener('activate', (event) => {
 });
 
 // Fetch event - strategi Cache First dengan Fallback ke Offline
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response dari cache
-        if (response) {
-          return response;
-        }
-
-        // Clone request karena request adalah stream dan hanya bisa digunakan sekali
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then((response) => {
-          // Cek apakah response valid
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-
-          // Clone response karena response adalah stream
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-
-          return response;
-        }).catch(() => {
-          // Jika fetch gagal dan tidak ada di cache, tampilkan offline page
-          return caches.match('/offline.html');
-        });
+self.addEventListener("fetch", (event) => {
+  if (event.request.mode === "navigate") {
+    // if user minta halaman baru, fallback ke offline.html saat offline
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => response)
+        .catch(() => caches.match("./offline.html"))
+    );
+  } else {
+    // asset load dari cache atau fetch
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        return cachedResponse || fetch(event.request);
       })
-  );
+    );
+  }
 });

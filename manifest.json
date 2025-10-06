@@ -1,7 +1,8 @@
 {
   "name": "Website Lalaayyey",
   "short_name": "Lalaayyey",
-  "start_url": "/index.html",
+  "start_url": "/nama-repository-anda/", 
+  "scope": "/nama-repository-anda/",     
   "display": "standalone",
   "background_color": "#80fff4",
   "theme_color": "#80fff4",
